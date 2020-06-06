@@ -5,8 +5,10 @@ import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLEnumValueDefinition;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
+import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaDirectiveWiring;
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment;
+import graphql.schema.transform.FieldVisibilitySchemaTransformation;
 import graphql.schema.transform.VisibleFieldPredicate;
 import graphql.schema.transform.VisibleFieldPredicateEnvironment;
 
@@ -16,6 +18,24 @@ public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFie
 
     @Override
     public GraphQLObjectType onObject(SchemaDirectiveWiringEnvironment<GraphQLObjectType> environment) {
+
+//        var directive = environment.getDirective(getName());
+//        var argument = directive.getArgument(SCOPE_ARGUMENT_NAME);
+//        //argument.getValue()
+//        var f = new FieldVisibilitySchemaTransformation(env -> {
+//            // check the env directive
+//            env.getSchemaElement().getDefinition().
+//                return true;
+//        })
+//
+//            f.apply(schema);
+
+
+            // for each child.. if implicitly private, if child has public, expose.
+            // if implicitly public, if child is not explicitly private, expose
+            // else, remove
+
+
         return null;
     }
 

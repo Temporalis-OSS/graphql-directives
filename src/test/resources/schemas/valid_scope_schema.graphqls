@@ -1,0 +1,38 @@
+schema {
+    query: QueryType
+}
+
+type QueryType{
+    explicitPublic: ExplicitPublic!
+    implicitPrivate: ImplicitPrivate!
+    explicitPrivate: ExplicitPrivate!
+    implicitNonScopedPrivate: ImplicitNonScopedPrivate!
+}
+
+type ExplicitPublic @scoped(scope: PUBLIC){
+    explicitPublicField: String! @scoped(scope: PUBLIC)
+    implicitPublicField: String!
+    implicitPrivateField: String! @scoped
+    explicitPrivatefield: String! @scoped(scope: PRIVATE)
+}
+
+type ImplicitPrivate @scoped {
+    explicitPublicField: String! @scoped(scope: PUBLIC)
+    implicitPrivateField: String! @scoped
+    implicitNonScopedPrivateField: String!
+    explicitPrivateField: String! @scoped(scope: PRIVATE)
+}
+
+type ExplicitPrivate @scoped(scope: PRIVATE){
+    explicitPublicField: String! @scoped(scope: PUBLIC)
+    implicitPrivateField: String! @scoped
+    implicitNonScopedPrivateField: String!
+    explicitPrivateField: String! @scoped(scope: PRIVATE)
+}
+
+type ImplicitNonScopedPrivate {
+    implicitPrivateField1: String!
+    implicitPrivateField2: String!
+}
+
+
