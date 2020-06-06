@@ -1,7 +1,6 @@
 package com.temporalis.io.directive.directives;
 
 import com.temporalis.io.directive.NamedDirective;
-import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLEnumValueDefinition;
 import graphql.schema.GraphQLFieldDefinition;
@@ -23,11 +22,6 @@ public class Scoped implements SchemaDirectiveWiring, NamedDirective {
 
     @Override
     public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
-        return null;
-    }
-
-    @Override
-    public GraphQLArgument onArgument(SchemaDirectiveWiringEnvironment<GraphQLArgument> environment) {
         return null;
     }
 
