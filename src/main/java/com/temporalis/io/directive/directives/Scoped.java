@@ -12,6 +12,8 @@ import graphql.schema.transform.VisibleFieldPredicateEnvironment;
 
 public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFieldPredicate {
 
+    private static final String SCOPE_ARGUMENT_NAME = "scope";
+
     @Override
     public GraphQLObjectType onObject(SchemaDirectiveWiringEnvironment<GraphQLObjectType> environment) {
         return null;
@@ -34,7 +36,7 @@ public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFie
 
     @Override
     public String getName() {
-        return "Scope";
+        return "scoped";
     }
 
     @Override
