@@ -1,9 +1,16 @@
 schema {
-    query: QueryType
+    query: ExplicitPublicQueryType
 }
 
-type QueryType{
+type ExplicitPublicQueryType @scoped(scope: PUBLIC) {
     explicitPublic: ExplicitPublic!
+    implicitPrivate: ImplicitPrivate!
+    explicitPrivate: ExplicitPrivate!
+    implicitNonScopedPrivate: ImplicitNonScopedPrivate!
+
+    explicitPublicButExplicitPrivateInQuery: ExplicitPublic! @scoped(scope: PRIVATE)
+    implicitPrivateButImplicitPrivateInQuery: ImplicitPrivate! @scoped
+    explicitPrivateButExplicitPublicInQuery: ExplicitPrivate! @scoped(scope: PUBLIC)
 }
 
 enum AnEnum @scoped(scope: PRIVATE){

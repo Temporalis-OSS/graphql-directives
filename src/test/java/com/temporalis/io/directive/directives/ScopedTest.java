@@ -36,7 +36,7 @@ public class ScopedTest {
 
 
     var wiring = RuntimeWiring.newRuntimeWiring()
-        .type("QueryType", typeWiring -> typeWiring
+        .type("ExplicitPublicQueryType", typeWiring -> typeWiring
             .dataFetcher("explicitPublic", new StaticDataFetcher("Hello World"))
         )
         .type("ExplicitPublic", typeWiring -> typeWiring
