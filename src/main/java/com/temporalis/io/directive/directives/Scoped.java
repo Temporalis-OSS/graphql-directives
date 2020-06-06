@@ -7,8 +7,10 @@ import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.idl.SchemaDirectiveWiring;
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment;
+import graphql.schema.transform.VisibleFieldPredicate;
+import graphql.schema.transform.VisibleFieldPredicateEnvironment;
 
-public class Scoped implements SchemaDirectiveWiring, NamedDirective {
+public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFieldPredicate {
 
     @Override
     public GraphQLObjectType onObject(SchemaDirectiveWiringEnvironment<GraphQLObjectType> environment) {
@@ -33,5 +35,10 @@ public class Scoped implements SchemaDirectiveWiring, NamedDirective {
     @Override
     public String getName() {
         return "Scope";
+    }
+
+    @Override
+    public boolean isVisible(VisibleFieldPredicateEnvironment environment) {
+        return false;
     }
 }
