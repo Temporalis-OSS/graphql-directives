@@ -4,9 +4,6 @@ schema {
 
 type QueryType{
     explicitPublic: ExplicitPublic!
-    implicitPrivate: ImplicitPrivate!
-    explicitPrivate: ExplicitPrivate!
-    implicitNonScopedPrivate: ImplicitNonScopedPrivate!
 }
 
 enum AnEnum @scoped(scope: PRIVATE){

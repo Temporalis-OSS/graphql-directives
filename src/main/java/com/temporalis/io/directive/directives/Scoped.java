@@ -1,73 +1,88 @@
 package com.temporalis.io.directive.directives;
 
 import com.temporalis.io.directive.NamedDirective;
+import graphql.schema.GraphQLArgument;
+import graphql.schema.GraphQLDirectiveContainer;
 import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLEnumValueDefinition;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLObjectType;
-import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaDirectiveWiring;
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment;
-import graphql.schema.transform.FieldVisibilitySchemaTransformation;
-import graphql.schema.transform.VisibleFieldPredicate;
-import graphql.schema.transform.VisibleFieldPredicateEnvironment;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFieldPredicate {
+public class Scoped implements SchemaDirectiveWiring, NamedDirective {
 
-    private static final String SCOPE_ARGUMENT_NAME = "scope";
+  private static final String SCOPE_ARGUMENT_NAME = "scope";
 
-    @Override
-    public GraphQLObjectType onObject(SchemaDirectiveWiringEnvironment<GraphQLObjectType> environment) {
+  @Override
+  public GraphQLObjectType onObject(SchemaDirectiveWiringEnvironment<GraphQLObjectType> environment) {
 
-//        var directive = environment.getDirective(getName());
-//        var argument = directive.getArgument(SCOPE_ARGUMENT_NAME);
-//        //argument.getValue()
-//        var f = new FieldVisibilitySchemaTransformation(env -> {
-//            // check the env directive
-//            env.getSchemaElement().getDefinition().
-//                return true;
-//        })
-//
-//            f.apply(schema);
+    var isImplicitPrivate = isImplicitPrivate(environment);
+    var publicFields = getPublicFields(environment.getElement().getFieldDefinitions(), !isImplicitPrivate);
+
+    return environment.getElement().transform(builder -> {
+      builder.clearFields();
+      builder.fields(publicFields);
+    });
+  }
+
+  @Override
+  public GraphQLEnumType onEnum(SchemaDirectiveWiringEnvironment<GraphQLEnumType> environment) {
+    var isImplicitPrivate = isImplicitPrivate(environment);
+    var publicFields = getPublicFields(environment.getElement().getValues(), !isImplicitPrivate);
+
+    return environment.getElement().transform(builder -> {
+      builder.clearValues();
+      builder.values(publicFields);
+    });
+  }
+
+  @Override
+  public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
+    return environment.getElement();
+  }
+
+  @Override
+  public GraphQLEnumValueDefinition onEnumValue(
+      SchemaDirectiveWiringEnvironment<GraphQLEnumValueDefinition> environment) {
+    return environment.getElement();
+  }
+
+  @Override
+  public GraphQLArgument onArgument(SchemaDirectiveWiringEnvironment<GraphQLArgument> environment) {
+    return environment.getElement();
+  }
 
 
-            // for each child.. if implicitly private, if child has public, expose.
-            // if implicitly public, if child is not explicitly private, expose
-            // else, remove
+  @Override
+  public String getName() {
+    return "scoped";
+  }
 
+  private <T extends GraphQLDirectiveContainer> List<T> getPublicFields(List<T> fields, boolean implicitlyPublic) {
+    var publicFields = new ArrayList<T>();
+    for (var field : fields) {
+      var fieldIsExplicitlyPrivate =
+          field.getDirective("scoped") != null && field.getDirective("scoped").getArgument("scope").getValue()
+              .equals("PRIVATE");
+      var fieldIsExplicitlyPublic =
+          field.getDirective("scoped") != null && field.getDirective("scoped").getArgument("scope").getValue()
+              .equals("PUBLIC");
 
-        return null;
+      if (implicitlyPublic && !fieldIsExplicitlyPrivate) {
+        publicFields.add(field);
+      } else if (!implicitlyPublic && fieldIsExplicitlyPublic) {
+        publicFields.add(field);
+      }
     }
+    return publicFields;
+  }
 
-    @Override
-    public GraphQLEnumType onEnum(SchemaDirectiveWiringEnvironment<GraphQLEnumType> environment) {
-
-//        var childrenToInclude = new ArrayList<>();
-//        environment.getElement().transform(b -> {
-//            b.clearValues();
-//            b.values()
-//        })
-        return null;
-    }
-
-    @Override
-    public GraphQLFieldDefinition onField(SchemaDirectiveWiringEnvironment<GraphQLFieldDefinition> environment) {
-        return null;
-    }
-
-    @Override
-    public GraphQLEnumValueDefinition onEnumValue(SchemaDirectiveWiringEnvironment<GraphQLEnumValueDefinition> environment) {
-        return null;
-    }
-
-    @Override
-    public String getName() {
-        return "scoped";
-    }
-
-    @Override
-    public boolean isVisible(VisibleFieldPredicateEnvironment environment) {
-        return false;
-    }
+  private <T extends GraphQLDirectiveContainer> boolean isImplicitPrivate(
+      SchemaDirectiveWiringEnvironment<T> environment) {
+    return environment.getDirective("scoped") == null ||
+        environment.getDirective("scoped").getArgument("scope").getValue().equals("PRIVATE");
+  }
 }

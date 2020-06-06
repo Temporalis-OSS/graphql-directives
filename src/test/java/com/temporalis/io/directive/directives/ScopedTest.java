@@ -6,11 +6,13 @@ import static org.mockito.Mockito.mock;
 import com.temporalis.io.directive.TestResources;
 import graphql.schema.GraphQLDirectiveContainer;
 import graphql.schema.GraphQLObjectType;
+import graphql.schema.StaticDataFetcher;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
+import graphql.schema.idl.TypeRuntimeWiring;
 import graphql.schema.idl.UnExecutableSchemaGenerator;
 import graphql.schema.transform.FieldVisibilitySchemaTransformation;
 import graphql.schema.transform.VisibleFieldPredicate;
@@ -23,7 +25,7 @@ public class ScopedTest {
   @BeforeAll
   public static void setUpOnce() {
     SchemaParser schemaParser = new SchemaParser();
-    UnExecutableSchemaGenerator schemaGenerator = new UnExecutableSchemaGenerator();
+    SchemaGenerator schemaGenerator = new SchemaGenerator();
 
     var scopedDirectiveSchema = TestResources.loadResource(TestResources.SCOPED_DIRECTIVE);
     var testSchema = TestResources.loadTestResource(TestResources.TEST_SCHEMA);
@@ -32,25 +34,18 @@ public class ScopedTest {
     typeRegistry.merge(schemaParser.parse(scopedDirectiveSchema));
     typeRegistry.merge(schemaParser.parse(testSchema));
 
-    var graphQLSchema = schemaGenerator.makeUnExecutableSchema(typeRegistry);
 
-    var schemaTransform = new FieldVisibilitySchemaTransformation(new VisibleFieldPredicate() {
-      @Override
-      public boolean isVisible(VisibleFieldPredicateEnvironment environment) {
-        if(environment.getParentElement() instanceof GraphQLObjectType){
-          if(((GraphQLObjectType)environment.getParentElement()).getName().startsWith("__")){
-            return true;
-          }
-        }
-        if(environment.getSchemaElement() instanceof GraphQLDirectiveContainer){
-          var container = (GraphQLDirectiveContainer)environment.getSchemaElement();
-          return container.getDirective("scoped") == null;
-        }
-        return true;
-      }
-    });
+    var wiring = RuntimeWiring.newRuntimeWiring()
+        .type("QueryType", typeWiring -> typeWiring
+            .dataFetcher("explicitPublic", new StaticDataFetcher("Hello World"))
+        )
+        .type("ExplicitPublic", typeWiring -> typeWiring
+            .dataFetcher("explicitPublicField", new StaticDataFetcher("Hello world"))
+        )
+        .directive("scoped", new Scoped())
+        .build();
 
-    var newSchema = schemaTransform.apply(graphQLSchema);
+    var graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
 
     var str = "hello world";
   }
