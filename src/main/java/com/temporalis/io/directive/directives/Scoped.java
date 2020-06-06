@@ -43,11 +43,11 @@ public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFie
     @Override
     public GraphQLEnumType onEnum(SchemaDirectiveWiringEnvironment<GraphQLEnumType> environment) {
 
-        var childrenToInclude = new ArrayList<>();
-        environment.getElement().transform(b -> {
-            b.clearValues();
-            b.values()
-        })
+//        var childrenToInclude = new ArrayList<>();
+//        environment.getElement().transform(b -> {
+//            b.clearValues();
+//            b.values()
+//        })
         return null;
     }
 

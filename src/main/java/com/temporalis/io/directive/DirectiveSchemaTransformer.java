@@ -13,14 +13,6 @@ import java.util.stream.Collectors;
 
 public class DirectiveSchemaTransformer {
 
-  public GraphQLSchema transform(GraphQLSchema schema){
-
-  }
-
-  private GraphQLObjectType removePrivateFieldDefinitions(GraphQLObjectType graphQLObjectType){
-
-  }
-
   private List<GraphQLFieldDefinition> getPublicFieldDefinitions(GraphQLObjectType graphQLObjectType){
     return graphQLObjectType.getFieldDefinitions().stream()
         .filter(field -> field.getDirective("scoped") != null)
