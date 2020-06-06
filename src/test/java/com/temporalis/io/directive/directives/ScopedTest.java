@@ -1,6 +1,5 @@
 package com.temporalis.io.directive.directives;
 
-import com.temporalis.io.directive.Scoped;
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment;
 import org.junit.jupiter.api.Test;
 
