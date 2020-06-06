@@ -1,0 +1,11 @@
+type Query {
+    aField: String!
+}
+
+type Subscription {
+
+}
+
+type Mutation {
+
+}
