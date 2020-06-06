@@ -9,6 +9,11 @@ type QueryType{
     implicitNonScopedPrivate: ImplicitNonScopedPrivate!
 }
 
+enum AnEnum @scoped(scope: PRIVATE){
+    VALUE1 @scoped(scope: PUBLIC)
+    VALUE2 @scoped(scope: PUBLIC)
+}
+
 type ExplicitPublic @scoped(scope: PUBLIC){
     explicitPublicField: String! @scoped(scope: PUBLIC)
     implicitPublicField: String!

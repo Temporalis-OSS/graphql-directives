@@ -11,6 +11,7 @@ import graphql.schema.idl.SchemaDirectiveWiringEnvironment;
 import graphql.schema.transform.FieldVisibilitySchemaTransformation;
 import graphql.schema.transform.VisibleFieldPredicate;
 import graphql.schema.transform.VisibleFieldPredicateEnvironment;
+import java.util.ArrayList;
 
 public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFieldPredicate {
 
@@ -41,6 +42,12 @@ public class Scoped implements SchemaDirectiveWiring, NamedDirective, VisibleFie
 
     @Override
     public GraphQLEnumType onEnum(SchemaDirectiveWiringEnvironment<GraphQLEnumType> environment) {
+
+        var childrenToInclude = new ArrayList<>();
+        environment.getElement().transform(b -> {
+            b.clearValues();
+            b.values()
+        })
         return null;
     }
 
