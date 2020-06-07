@@ -1,12 +1,14 @@
 package com.temporalis.io.directive.directives.scoped;
 
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toMap;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.Map;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+
+import static java.lang.String.format;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 
 @RequiredArgsConstructor
 public enum Scope {
@@ -20,10 +22,7 @@ public enum Scope {
   private final String value;
 
   public static Scope fromString(String value) {
-    var scope = SCOPE_BY_VALUE.getOrDefault(value.toLowerCase(), null);
-    if (scope == null) {
-      throw new IllegalArgumentException(format("%s is not a valid scope value", value));
-    }
-    return scope;
+    return ofNullable(SCOPE_BY_VALUE.get(value.toLowerCase())).orElseThrow(
+            () -> new IllegalArgumentException(format("%s is not a valid scope value", value)));
   }
 }
