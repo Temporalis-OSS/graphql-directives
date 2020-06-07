@@ -4,19 +4,15 @@ import static graphql.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 
 import com.temporalis.io.directive.TestResources;
-import graphql.schema.GraphQLDirectiveContainer;
-import graphql.schema.GraphQLObjectType;
+import com.temporalis.io.directive.directives.scoped.Scope;
+import com.temporalis.io.directive.directives.scoped.ScopeProvider;
+import com.temporalis.io.directive.directives.scoped.Scoped;
 import graphql.schema.StaticDataFetcher;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaDirectiveWiringEnvironment;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
-import graphql.schema.idl.TypeRuntimeWiring;
-import graphql.schema.idl.UnExecutableSchemaGenerator;
-import graphql.schema.transform.FieldVisibilitySchemaTransformation;
-import graphql.schema.transform.VisibleFieldPredicate;
-import graphql.schema.transform.VisibleFieldPredicateEnvironment;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +38,7 @@ public class ScopedTest {
         .type("ExplicitPublic", typeWiring -> typeWiring
             .dataFetcher("explicitPublicField", new StaticDataFetcher("Hello world"))
         )
-        .directive("scoped", new Scoped())
+        .directive("scoped", new Scoped(() -> Scope.PUBLIC))
         .build();
 
     var graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, wiring);
@@ -52,7 +48,7 @@ public class ScopedTest {
 
   @Test
   public void onObject() {
-    var scoped = new Scoped();
+    var scoped = new Scoped(() -> Scope.PUBLIC);
     assertNull(scoped.onObject(mock(SchemaDirectiveWiringEnvironment.class)));
   }
 }
