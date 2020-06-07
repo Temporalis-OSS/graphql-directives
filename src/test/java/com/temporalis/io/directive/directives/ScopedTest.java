@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 
 import com.temporalis.io.directive.TestResources;
 import com.temporalis.io.directive.directives.scoped.Scope;
-import com.temporalis.io.directive.directives.scoped.ScopeProvider;
 import com.temporalis.io.directive.directives.scoped.Scoped;
 import graphql.schema.StaticDataFetcher;
 import graphql.schema.idl.RuntimeWiring;
@@ -29,7 +28,6 @@ public class ScopedTest {
     var typeRegistry = new TypeDefinitionRegistry();
     typeRegistry.merge(schemaParser.parse(scopedDirectiveSchema));
     typeRegistry.merge(schemaParser.parse(testSchema));
-
 
     var wiring = RuntimeWiring.newRuntimeWiring()
         .type("ExplicitPublicQueryType", typeWiring -> typeWiring

@@ -11,11 +11,18 @@ type ExplicitPublicQueryType @scoped(scope: PUBLIC) {
     explicitPublicButExplicitPrivateInQuery: ExplicitPublic! @scoped(scope: PRIVATE)
     implicitPrivateButImplicitPrivateInQuery: ImplicitPrivate! @scoped
     explicitPrivateButExplicitPublicInQuery: ExplicitPrivate! @scoped(scope: PUBLIC)
+
+    explicitPublicFieldResolverWithExcludedArgument(
+        includedArgument: String!,
+        excludedArgument: String @scoped(scope: PRIVATE)
+    ): String!
 }
 
-enum AnEnum @scoped(scope: PRIVATE){
-    VALUE1 @scoped(scope: PUBLIC)
-    VALUE2 @scoped(scope: PUBLIC)
+enum ImplicitPrivateEnum @scoped {
+    EXPLICIT_PUBLIC_VALUE @scoped(scope: PUBLIC)
+    IMPLICIT_PRIVATE_VALUE @scoped
+    IMPLICIT_NON_SCOPED_PRIVATE_VALUE
+    EXPLICIT_PRIVATE_VALUE @scoped(scope: PRIVATE)
 }
 
 type ExplicitPublic @scoped(scope: PUBLIC){
